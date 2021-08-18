@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- 부가적인 테마 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<meta charset="UTF-8">
+
+<title>게시판</title>
+</head>
+
+<body>
+
+<div class="col-md-6">
+    <h2>게시글 상세</h2>
+    <form>
+        <table class="table table-striped">
+            <tr>
+                <td>글번호</td>
+                <td name="indexNum" id="indexNum" th:text ="${indexNum}"> </td>
+            </tr>
+            <tr>
+                <td>작성자 이름</td>
+                <td>
+                    <input type="text" name="writeName" id="writeName" readonly style="border:none;"/>
+                </td>
+            </tr>
+            <tr>
+                <td>제목</td>
+                <td>
+                    <input type="text" name="writeTitle" id="writeTitle"/>
+                </td>
+            </tr>
+            <tr>
+                <td>내용</td>
+                <td>
+                    <input type="textarea" style="width:500px;height:300px;" name="writeType" id="writeType"/>
+                </td>
+            </tr>
+        </table>
+        <input type="button" id="submit" onclick="submit_click()" value="수정하기" class="btn btn btn-info">
+        <input type="button" id="delete" onclick="delete_click()" value="삭제하기" class="btn btn btn-info">
+        <input type="button" id="delete" onclick="location.href='/board/main'" value="게시판 목록 이동하기" class="btn btn btn-info">
+    </form>
+</div>
+</body>
+
+<script>
+	
+	/* axios로 상세 리스트 불러오기*/
+    $(function(){
+        var $indexNum = $("#indexNum").text();
+        axios.get('/board/' + $indexNum + '/detailContent',{
+        }).then(function (response) {
+			console.log(response.data);
+            let $indexNum = response.data.indexNum;
+            let $writeName = response.data.writeName;
+            let $writeTitle = response.data.writeTitle;
+            let $writeType = response.data.writeType;
+            console.log($indexNum);
+            console.log($writeName);
+            console.log($writeTitle);
+            console.log($writeType);
+            document.getElementById("indexNum").value = $indexNum;
+            document.getElementById("writeName").value = $writeName;
+            document.getElementById("writeTitle").value = $writeTitle;
+            document.getElementById("writeType").value = $writeType;
+
+        }).then(function (error){
+        })
+    })
+	
+	/* 게시판 상세내용 수정하기 */
+    function submit_click(){
+        var $indexNum = $("#indexNum").val();
+        var writeName = $("#writeName").val();
+        var writeTitle = $("#writeTitle").val();
+        var writeType = $("#writeType").val();
+        
+        console.log($indexNum);
+        console.log(writeName);
+        console.log(writeTitle);
+        console.log(writeType);
+
+        axios.request({
+			method : 'PUT',
+			url : '/board/' + $indexNum + '/updateContent',
+			//headers : {'Content-type' : 'application/json'},
+			params : {
+				writeTitle : writeTitle,
+            	writeType : writeType
+			}
+            
+        }).then(
+            alert("수정을 성공 했습니다."),
+            location.href="/board/main"
+        )
+
+    }
+
+    function delete_click(){
+        var $indexNum = $("#indexNum").val();
+        console.log($indexNum);
+        
+        // 확인을 누르면 else문이 실행(삭제기능) 취소를 누르면 페이지 새로고침
+        if(!confirm("삭제를 진행하시겠습니까?")) {
+				window.location.href = "/board/" + $indexNum
+		}else{
+			axios.request({
+				method : 'POST',
+				url : '/board/' + $indexNum + '/deleteContent'
+			}).then(function (response) {
+	            alert("삭제가 완료되었습니다.")
+				window.location.href = "/board/main"
+	        })
+	        .catch(function (response) {
+	
+	        })
+	        .then(function () {
+	        });
+			
+		}
+        
+        
+            
+    }
+    
+
+</script>
+
+</html>

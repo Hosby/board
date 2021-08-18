@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  servlet:
+    context-path: '/'
+
+spring:
+  #mariaeDB 연결하기
+  datasource:
+    #url: jdbc:mysql://fb14f22d78c6ca8d:55ed07d84a52005b@172.30.200.103:3306/op_efb569db_5cda_4b27_a400_b99812c34487?characterEncoding=utf8&autoReconnect=true
+    #driver-class-name: com.mysql.cj.jdbc.Driver
+    #username: fb14f22d78c6ca8d
+    #password: 55ed07d84a52005b
+    url: jdbc:${vcap.services.Mysql-DB.credentials.uri}?characterEncoding=utf8&autoReconnect=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${vcap.services.Mysql-DB.credentials.username}
+    password: ${vcap.services.Mysql-DB.credentials.password}
+   
+  application:
+    name: board-service
+
+ #html 페이지 보여주기
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+#eureka:
+ ##  service-url:
+   #   defaulZone: http://localhost:8761/eureka/
+    #register-with-eureka: true
+    #fetch-registry: false

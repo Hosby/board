@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoyun.board.mapper.BoardMapper">
+
+	<!-- 게시판 목록 불러오기 -->
+	<select id="selectBoardList" resultType="com.hoyun.board.repository.BoardDTO">
+		SELECT * FROM BOARDLIST order by INDEXNUM DESC
+	</select>
+	
+	<!-- 게시판 상세목록 불러오기 -->
+	<select id="selectBoardDetail" parameterType="int" resultType="com.hoyun.board.repository.BoardDTO">
+		SELECT * FROM BOARDLIST where INDEXNUM = #{indexNum}
+	</select>
+
+	<!-- 게시판에 글 등록하기 -->
+	<insert id="insertContent" parameterType="com.hoyun.board.repository.BoardDTO">
+		INSERT INTO BOARDLIST(INDEXNUM, WRITENAME, WRITETITLE, WRITETYPE)
+        VALUES(null, #{writeName}, #{writeTitle}, #{writeType})
+	</insert>
+	
+	<!-- 게시판 상세 수정하기 -->
+	<update id="updateContent" parameterType="com.hoyun.board.repository.BoardDTO">
+		UPDATE BOARDLIST
+		SET WRITETITLE = #{writeTitle}, WRITETYPE = #{writeType}
+		WHERE INDEXNUM = #{indexNum}
+	</update>
+	
+	<!-- 게시판 상세 삭제하기 -->
+	<delete id="deleteContent" parameterType="int">
+		DELETE FROM BOARDLIST WHERE INDEXNUM = #{indexNum}
+	</delete>
+	
+</mapper>

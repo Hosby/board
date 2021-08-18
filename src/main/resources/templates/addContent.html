@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- 부가적인 테마 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<style>
+	#writeType {
+		display: inline-block;
+		padding: 10px;
+		width: 300px;
+		height: 200px;
+	}
+	#writeName{
+		width: 300px;
+	}
+	#writeTitle{
+		width: 300px;
+	}
+</style>
+<meta charset="UTF-8">
+<title>게시판</title>
+</head>
+
+<body>
+<h1>내용을 입력하세요.</h1>
+<div style="padding:10px">
+	<div>
+		<div>작성자</div>
+		<input class="form-control" type="text" id="writeName" placeholder="이름을 입력하세요." autofocus required  onkeyup="check(this)" onkeydown="check(this)"></input>
+	</div>
+	<br>
+	<div>
+		<div>제목</div>
+		<input class="form-control" type="text" id="writeTitle" placeholder="제목을 입력하세요." required></input>
+	</div>
+	<br>
+	<div>
+		<div>내용</div>
+		<input class="form-control" type="text" id="writeType" placeholder="내용을 입력하세요." required></input>
+	</div>
+	
+		<br>
+	<div>
+		<input type="button" onClick="addContent()" value="글 작성 완료" class="btn btn btn-info">
+		<input type="button" onClick="location.href='/board/main'" value="게시판 목록 이동하기" class="btn btn btn-info">
+	</div>
+</div>
+
+
+</body>
+
+<script>
+	function addContent() {
+		console.log("button click success");
+		
+		var writeName = $("#writeName").val();
+		var writeTitle = $("#writeTitle").val();
+		var writeType = $("#writeType").val();
+		
+		console.log("작성자: " + writeName);
+		console.log("제목: " + writeTitle);
+		console.log("내용: " + writeType);
+		
+		axios.request({
+			method : 'POST',
+			url : '/board/addContent',
+			headers : {'Content-type' : 'application/json'},
+			params : {
+				writeName: writeName,
+		    	writeTitle: writeTitle,
+		    	writeType: writeType
+			}
+		  }).then(
+			console.log('writeName : '+writeName),
+			console.log('writeTitle : '+writeTitle),
+			console.log('writeType : '+writeType),
+		    alert("게시글 등록을 성공하였습니다."),
+		    location.href = "/board/main"
+		  )
+		  
+	}
+	
+function check(obj){
+        //정규식으로 특수문자 판별
+        var specialKey = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]/gi;
+        
+        //배열에서 하나씩 값을 비교
+        if( specialKey.test(obj.value) ){
+			alert("특수문자를 사용할 수 없습니다.");
+           //값이 일치하면 문자를 삭제
+           obj.value = obj.value.substring( 0 , obj.value.length - 1 ); 
+        }
+      }
+	
+</script>
+
+</html>
